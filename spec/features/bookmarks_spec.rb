@@ -42,4 +42,20 @@ describe Bookmarks do
 			expect(Bookmarks.all.length).to eq 0
 		end
 	end
+
+	describe '.update' do
+		it 'updates a bookmark entry based upon the user provided information' do
+			bookmark = Bookmarks.create(url: 'http://www.testbookmark.com', title: 'Test Bookmark')
+			persisted_data = persisted_data(id: bookmark.id)
+
+			Bookmarks.update(persisted_data['id'], 'New Bookmark', 'http://www.testbookmark.com')
+
+			bookmark = Bookmarks.all.first
+
+			expect(bookmark).to be_a Bookmarks
+			expect(bookmark.id).to eq persisted_data['id']
+			expect(bookmark.title).to eq 'New Bookmark'
+			expect(bookmark.url).to eq 'http://www.testbookmark.com'
+		end
+	end
 end

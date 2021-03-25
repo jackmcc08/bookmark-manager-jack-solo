@@ -27,8 +27,15 @@ class BookmarksManager < Sinatra::Base
     redirect '/bookmarks'
   end
 
+  get '/bookmarks/:id/update' do
+    @id = params[:id]
+    @url = params[:url]
+    @title = params[:title]
+    erb :update_bookmark
+  end
+
   patch '/bookmarks/:id/update' do
-    Bookmarks.update(id: params[:id])
+    Bookmarks.update(params[:id], params[:title], params[:url])
     redirect '/bookmarks'
   end
 

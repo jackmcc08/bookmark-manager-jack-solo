@@ -70,6 +70,8 @@ feature 'Update bookmark' do
     result = connection.exec("SELECT id FROM bookmarks WHERE title='Test Bookmark';")
     id = result.first['id']
     expect(current_path).to eq "/bookmarks/#{id}/update"
+    fill_in 'title', with: 'New Bookmark'
+    click_button('Update')
+    expect(page).to have_link('New Bookmark', href: 'http://testbookmark.com')
   end
 end
-

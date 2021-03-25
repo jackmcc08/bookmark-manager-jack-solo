@@ -10,11 +10,7 @@ class Bookmarks
 	end
 
 	def self.all
-		if ENV['ENVIRONMENT'] == 'test'
-			connection = PG.connect(dbname: 'bookmark_manager_test')
-		else
-			connection = PG.connect(dbname: 'bookmark_manager')
-		end
+		connection = database_connect
 
 		result = connection.exec("SELECT * FROM bookmarks")
 
@@ -24,22 +20,30 @@ class Bookmarks
 	end
 
 	def self.create(url:, title:)
-		if ENV['ENVIRONMENT'] == 'test'
-			connection = PG.connect(dbname: 'bookmark_manager_test')
-		else
-			connection = PG.connect(dbname: 'bookmark_manager')
-		end
-		
+		connection = database_connect
+
 		result = connection.exec("INSERT INTO bookmarks (url, title) VALUES('#{url}', '#{title}') RETURNING id, title, url;")
 		Bookmarks.new(id: result[0]['id'], title: result[0]['title'], url: result[0]['url'])
 	end
 
 	def self.delete(id:)
-		if ENV['ENVIRONMENT'] == 'test'
-			connection = PG.connect(dbname: 'bookmark_manager_test')
-		else
-			connection = PG.connect(dbname: 'bookmark_manager')
-		end
+		connection = database_connect
 		connection.exec("DELETE FROM bookmarks WHERE id = #{id}")
 	end
+
+	def self.update(id, title, url)
+		connection = database_connect
+		connection.exec("UPDATE bookmarks SET url = '#{url}', title = '#{title}' WHERE id = #{id}")
+	end
+
+	private
+
+	def self.database_connect
+		if ENV['ENVIRONMENT'] == 'test'
+			PG.connect(dbname: 'bookmark_manager_test')
+		else
+			PG.connect(dbname: 'bookmark_manager')
+		end
+	end
+
 end

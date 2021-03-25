@@ -36,4 +36,9 @@ I want to be able to update bookmarks
 
 
 URL *********** update delete
-
+>update
+> Title field Box
+> Url Field box
+> pre-filled with the databse entry
+> an update button to perform the update.
+> redirect you back to bookmarks 
