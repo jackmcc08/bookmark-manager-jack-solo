@@ -1,6 +1,15 @@
-<form action="/bookmarks/<%= @id %>/update" method="post">
-  <input type="text" name="url" value="<%= @url %>" />
-  <input type="text" name="title" value="<%= @title %>" />
+<% if flash[:not_url] != nil %>
+  <div data-alert class=".incorrect_url">
+    <%= flash[:not_url] %>
+    <a href="#" class="close">&times;</a>
+  </div>
+<% end %>
+
+
+
+<form action="/bookmarks/<%= @bookmark.id %>" method="post">
+  <input type="text" name="url" value="<%= @bookmark.url %>" />
+  <input type="text" name="title" value="<%= @bookmark.title %>" />
   <input type="hidden" name="_method" value='PATCH'>
   <input type="submit" value="Update"/>
 </form>

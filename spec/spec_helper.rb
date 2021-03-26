@@ -6,18 +6,24 @@ require File.join(File.dirname(__FILE__), '..', 'app.rb')
 require 'capybara'
 require 'capybara/rspec'
 require 'rspec'
+require 'simplecov'
+require 'simplecov-console'
 require_relative './setup_test_database'
 
 Capybara.app = BookmarksManager
 
-RSpec.configure do |config|
-  config.before(:each) do
-    setup_test_database
-    Bookmarks.setup
-  end
-end
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::Console,
+  # Want a nice code coverage website? Uncomment this next line!
+  # SimpleCov::Formatter::HTMLFormatter
+])
+SimpleCov.start
 
 RSpec.configure do |config|
+  config.before(:each) do
+    setup_test_database_2
+  end
+
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end

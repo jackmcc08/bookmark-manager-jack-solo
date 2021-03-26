@@ -1,21 +1,22 @@
 require 'pg'
 require './lib/database_connection'
+require 'uri'
 
 class Bookmarks
 	attr_reader :id, :title, :url
 
 	def initialize(id:, title:, url:)
-		@id  = id
-		@title = title
-		@url = url
-	end
+ 	  @id = id
+ 	 	@title = title
+ 	 	@url = url
+ 	end
 
 	def self.all
-		result = @@database.query("SELECT * FROM bookmarks")
+ 	  result = @@database.query("SELECT * FROM bookmarks")
 
-		result.map do |bookmark|
-			Bookmarks.new(id: bookmark['id'], title: bookmark['title'], url: bookmark['url'])
-		end
+ 	  result.map do |bookmark|
+		 	Bookmarks.new(id: bookmark['id'], title: bookmark['title'], url: bookmark['url'])
+  	end
 	end
 
 	def self.create(url:, title:)
@@ -23,26 +24,32 @@ class Bookmarks
 		Bookmarks.new(id: result[0]['id'], title: result[0]['title'], url: result[0]['url'])
 	end
 
-	def self.delete(id:)
+ 	def self.delete(id:)
 		@@database.query("DELETE FROM bookmarks WHERE id = #{id}")
 	end
 
-	def self.update(id, title, url)
-		@@database.query("UPDATE bookmarks SET url = '#{url}', title = '#{title}' WHERE id = #{id}")
+  def self.update(id, title, url)
+	  @@database.query("UPDATE bookmarks SET url = '#{url}', title = '#{title}' WHERE id = #{id}")
+  end
+
+  def self.setup
+ 	 @@database = database_connect
+  end
+
+	def self.find(id)
+		@@database.query("SELECT * FROM bookmarks WHERE id = '#{id}'").map { |bookmark| Bookmarks.new(id: bookmark['id'], title: bookmark['title'], url: bookmark['url']) }[0]
 	end
 
-	def self.setup
-		@@database = database_connect
+	def self.not_a_url?(url)
+		!url.match?(/(http:\/\/)|(https:\/\/)/i)
 	end
 
-	private
-
+private
 	def self.database_connect
 		if ENV['ENVIRONMENT'] == 'test'
-			DatabaseConnection.setup('bookmark_manager_test')
+	 		DatabaseConnection.setup('bookmark_manager_test')
 		else
-			DatabaseConnection.setup('bookmark_manager')
+  		DatabaseConnection.setup('bookmark_manager')
 		end
 	end
-
 end
