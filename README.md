@@ -50,3 +50,12 @@ URL *********** update delete
 > pre-filled with the databse entry
 > an update button to perform the update.
 > redirect you back to bookmarks
+
+
+As a User
+to provide notes on my bookmarks
+I want to be able to add comments to my bookmark
+
+bookmark one-to-many comments
+
+final comment test not working???? - seems to be an issue with the display mechanism - seems to be displaying a single hash, not an array of hashes

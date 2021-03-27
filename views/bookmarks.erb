@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Makers Week 4 - bookmark challenge</title>
+		<link rel="stylesheet" type="text/css" href="/css/main.css">
+  </head>
+
+  <body>
+
 <% if flash[:bookmarks] != nil %>
   <div data-alert class="flash[:bookmark] alert-box radius">
     <%= flash[:bookmarks] %>
@@ -10,16 +20,26 @@
 <ul>
   <% @bookmarks.each do |bookmark| %>
     <li class="bookmark" id="bookmark-<%= bookmark.id %>">
-      <a href="<%= bookmark.url %>">
-        <%= bookmark.title %>
-      </a>
-      <form action='/bookmarks/<%= bookmark.id %>/update' method='get'>
-        <input type="submit" value="Update"/>
-      </form>
-      <form action='/bookmarks/<%= bookmark.id %>' method='post'>
-      	<input type="hidden" name="_method" value='DELETE'>
-      	<input type="submit" value="Delete"/>
-      </form>
+      <div id="Bookmark-display">
+        <a href="<%=bookmark.url%>">
+          <%= bookmark.title %>
+        </a>
+        <form action="/bookmarks/<%= bookmark.id %>/update" method='get'>
+          <input type="submit" value="Update"/>
+        </form>
+        <form action='/bookmarks/<%= bookmark.id %>/comment' method='get'>
+          <input type="submit" value="Comment"/>
+        </form>
+        <form action='/bookmarks/<%= bookmark.id %>' method='post'>
+        	<input type="hidden" name="_method" value='DELETE'>
+        	<input type="submit" value="Delete"/>
+        </form>
+      </div>
+      <% if bookmark.comments != nil %>
+        <% bookmark.comments.each do |comment| %>
+          <p><%= comment %></p>
+        <% end %>
+      <% end %>
     </li>
   <% end %>
 </ul>
@@ -27,3 +47,6 @@
 <form action="/bookmarks/new">
   <input type="submit" value="Add Bookmarks">
 </form>
+
+</body>
+</html>

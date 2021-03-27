@@ -5,12 +5,14 @@ require 'pg'
 describe Bookmarks do
 	describe '.all' do
  	 	it 'returns all bookmarks' do
+			Bookmarks.comment('1', 'This is a comment')
   	 	bookmarks = Bookmarks.all
   		expect(bookmarks.length).to eq 3
   		expect(bookmarks.first).to be_a Bookmarks
   		expect(bookmarks.first.id).to eq '1'
   		expect(bookmarks.first.title).to eq 'Makers Academy'
   		expect(bookmarks.first.url).to eq 'http://www.makersacademy.com'
+			expect(bookmarks.first.comments.first).to eq 'This is a comment'
   	end
  	end
 
@@ -38,7 +40,6 @@ describe Bookmarks do
    		Bookmarks.update(1, 'New Bookmark', 'http://www.testbookmark.com')
 
   		bookmark = Bookmarks.all.last
-
   		expect(bookmark).to be_a Bookmarks
   		expect(bookmark.id).to eq '1'
   		expect(bookmark.title).to eq 'New Bookmark'
@@ -63,6 +64,13 @@ describe Bookmarks do
 		it 'returns false if the URL entered is not a correct URL' do
 			expect(Bookmarks.not_a_url?('www.cats.com')).to be true
 			expect(Bookmarks.not_a_url?('http://www.cats.com')).to be false
+		end
+	end
+
+	describe '.comment' do
+		it 'adds a comment to a bookmark' do
+			expect(Bookmarks.comment('1', "This is also a comment")).to be_instance_of(PG::Result)
+			expect(Bookmarks.comment('1', "This is a comment")[0]['comment']).to eq "This is a comment"
 		end
 	end
 end

@@ -1,0 +1,6 @@
+<h2>Comment on <%= @bookmark.title+': '+@bookmark.url %></h2>
+<p> Max 240 characters </p>
+<form action="/bookmarks/<%= @bookmark.id %>" method="post">
+  <textarea name="comment" rows="8" cols="80" maxlength="240"></textarea>
+  <input type="submit" value="Submit">
+</form>

@@ -12,11 +12,13 @@ def connect_to_test_database
 end
 
 def clean_test_database(connection)
-	 connection.exec("DROP TABLE IF EXISTS bookmarks")
+	 connection.exec("DROP TABLE IF EXISTS bookmarks CASCADE")
+	 connection.exec("DROP TABLE IF EXISTS comments")
 end
 
 def create_bookmarks_table_in_test(connection)
-	 connection.exec("CREATE TABLE bookmarks(id SERIAL PRIMARY KEY, url VARCHAR(60), title VARCHAR(60));")
+	connection.exec("CREATE TABLE bookmarks(id SERIAL PRIMARY KEY, url VARCHAR(60), title VARCHAR(60));")
+	connection.exec("CREATE TABLE comments(comment_ID SERIAL PRIMARY KEY, comment VARCHAR(240), bookmark_ID integer REFERENCES bookmarks);")
 end
 
 def populate_bookmarks_table(connection)

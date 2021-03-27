@@ -62,3 +62,19 @@ feature 'Validates bookmark' do
     expect(page).to have_content('You did not enter a correct URL')
   end
 end
+
+feature 'comment on a bookmark' do
+  scenario 'a user can add a comment to a bookmark and see it displayed ' do
+    visit '/bookmarks'
+    first('.bookmark').click_button 'Comment'
+    fill_in 'comment', with: 'This is my first comment'
+    click_button 'Submit'
+    visit '/bookmarks'
+    first('.bookmark').click_button 'Comment'
+    fill_in 'comment', with: 'This is my Second comment'
+    click_button 'Submit'
+    # Bookmarks.all.each { |bookmark| puts bookmark.id, bookmark.title,  bookmark.comments }
+    expect(page).to have_content 'This is my first comment'
+    expect(page).to have_content 'This is my Second comment'
+  end
+end
