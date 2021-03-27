@@ -62,9 +62,20 @@ class BookmarksManager < Sinatra::Base
   end
 
   post '/bookmarks/:id' do
-    Bookmarks.comment(params[:id], params[:comment])
+    Bookmarks.comment(params[:id], params[:comment]) unless params[:comment] == nil
+    Bookmarks.tag(params[:id], params[:tag]) unless params[:tag] == nil
     redirect '/bookmarks'
   end
+
+  get '/bookmarks/:id/tag' do
+    @bookmark = Bookmarks.find(params[:id])
+    erb :enter_tag
+  end
+
+  # post '/bookmarks/:id' do
+  #   Bookmarks.comment(params[:id], params[:comment])
+  #   redirect '/bookmarks'
+  # end
 
   run! if app_file == $0
 end

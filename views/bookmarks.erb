@@ -30,15 +30,25 @@
         <form action='/bookmarks/<%= bookmark.id %>/comment' method='get'>
           <input type="submit" value="Comment"/>
         </form>
+        <form action='/bookmarks/<%= bookmark.id %>/tag' method='get'>
+          <input type="submit" value="Tag"/>
+        </form>
         <form action='/bookmarks/<%= bookmark.id %>' method='post'>
         	<input type="hidden" name="_method" value='DELETE'>
         	<input type="submit" value="Delete"/>
         </form>
       </div>
+      <p>Bookmark Comments:</p>
       <% if bookmark.comments != nil %>
         <% bookmark.comments.each do |comment| %>
           <p><%= comment %></p>
         <% end %>
+      <% end %>
+      <p>Tags:</p>
+      <% if bookmark.tags != nil %>
+        <p><% bookmark.tags.each do |tag| %>
+          <%= tag %>
+        <% end %></p>
       <% end %>
     </li>
   <% end %>

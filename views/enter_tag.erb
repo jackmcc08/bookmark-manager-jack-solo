@@ -1,0 +1,6 @@
+<h2>Tag <%= @bookmark.title+': '+@bookmark.url %></h2>
+<p> Max 60 characters </p>
+<form action="/bookmarks/<%= @bookmark.id %>" method="post">
+  <textarea name="tag" rows="8" cols="80" maxlength="60"></textarea>
+  <input type="submit" value="Submit">
+</form>

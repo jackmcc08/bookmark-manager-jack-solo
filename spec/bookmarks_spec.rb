@@ -6,6 +6,7 @@ describe Bookmarks do
 	describe '.all' do
  	 	it 'returns all bookmarks' do
 			Bookmarks.comment('1', 'This is a comment')
+			Bookmarks.tag('1', "#Makers")
   	 	bookmarks = Bookmarks.all
   		expect(bookmarks.length).to eq 3
   		expect(bookmarks.first).to be_a Bookmarks
@@ -13,6 +14,7 @@ describe Bookmarks do
   		expect(bookmarks.first.title).to eq 'Makers Academy'
   		expect(bookmarks.first.url).to eq 'http://www.makersacademy.com'
 			expect(bookmarks.first.comments.first).to eq 'This is a comment'
+			expect(bookmarks.first.tags.first).to eq '#Makers'
   	end
  	end
 
@@ -71,6 +73,13 @@ describe Bookmarks do
 		it 'adds a comment to a bookmark' do
 			expect(Bookmarks.comment('1', "This is also a comment")).to be_instance_of(PG::Result)
 			expect(Bookmarks.comment('1', "This is a comment")[0]['comment']).to eq "This is a comment"
+		end
+	end
+
+	describe '.tag' do
+		it 'adds a tag to a bookmark' do
+			expect(Bookmarks.tag('1', "#Makers")).to be_instance_of(PG::Result)
+			expect(Bookmarks.tag('1', "#Makers").first['bookmark_tagid']).to eq "2"
 		end
 	end
 end

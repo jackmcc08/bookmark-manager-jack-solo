@@ -64,7 +64,7 @@ feature 'Validates bookmark' do
 end
 
 feature 'comment on a bookmark' do
-  scenario 'a user can add a comment to a bookmark and see it displayed ' do
+  scenario 'a user can add a comment to a bookmark and see it displayed' do
     visit '/bookmarks'
     first('.bookmark').click_button 'Comment'
     fill_in 'comment', with: 'This is my first comment'
@@ -76,5 +76,20 @@ feature 'comment on a bookmark' do
     # Bookmarks.all.each { |bookmark| puts bookmark.id, bookmark.title,  bookmark.comments }
     expect(page).to have_content 'This is my first comment'
     expect(page).to have_content 'This is my Second comment'
+  end
+end
+
+feature 'tag a bookmark' do
+  scenario 'a user can add a tag to a bookmark and see it displayed on the bookmarks page' do
+    visit '/bookmarks'
+    first('.bookmark').click_button 'Tag'
+    fill_in 'tag', with: '#Makers'
+    click_button 'Submit'
+    expect(page).to have_content '#Makers'
+  end
+end
+
+feature 'see all bookmarks related to a tag' do
+  scenario 'a user can click on a tag and see all bookmarks related to it' do
   end
 end

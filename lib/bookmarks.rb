@@ -3,13 +3,14 @@ require_relative 'database_connection'
 require 'uri'
 
 class Bookmarks
-	attr_reader :id, :title, :url, :comments
+	attr_reader :id, :title, :url, :comments, :tags
 
-	def initialize(id:, title:, url:, comments:)
+	def initialize(id:, title:, url:, comments:, tags:)
  	  @id = id
  	 	@title = title
  	 	@url = url
 		@comments = comments
+		@tags = tags
  	end
 
 	def self.all
@@ -18,9 +19,13 @@ class Bookmarks
  	  result.map do |bookmark|
 			comments = []
 			@@database.query("SELECT * FROM comments WHERE bookmark_ID=#{bookmark['id']}").each { |comment| comments << comment['comment'] }
+			tag_ids = []
+			@@database.query("SELECT * FROM bookmark_tags WHERE bookmarkID=#{bookmark['id']}").each { |bookmark_tag| tag_ids << bookmark_tag['tagid'] }
+			tags = []
+			tag_ids.each{ |id| tags << @@database.query("SELECT tag FROM tags WHERE tagID='#{id}'").first['tag'] }
 			# p comments
 			# comments.each { |x| puts x} unless comments.nil?
-		 	Bookmarks.new(id: bookmark['id'], title: bookmark['title'], url: bookmark['url'], comments: comments)
+		 	Bookmarks.new(id: bookmark['id'], title: bookmark['title'], url: bookmark['url'], comments: comments, tags: tags)
   	end
 	end
 
@@ -34,7 +39,7 @@ class Bookmarks
 
 	def self.create(url:, title:)
 		result = @@database.query("INSERT INTO bookmarks (url, title) VALUES('#{url}', '#{title}') RETURNING id, title, url;")
-		Bookmarks.new(id: result[0]['id'], title: result[0]['title'], url: result[0]['url'], comments: [])
+		Bookmarks.new(id: result[0]['id'], title: result[0]['title'], url: result[0]['url'], comments: [], tags: [])
 	end
 
  	def self.delete(id:)
@@ -50,7 +55,7 @@ class Bookmarks
   end
 
 	def self.find(id)
-		@@database.query("SELECT * FROM bookmarks WHERE id = '#{id}'").map { |bookmark| Bookmarks.new(id: bookmark['id'], title: bookmark['title'], url: bookmark['url'], comments: []) }[0]
+		@@database.query("SELECT * FROM bookmarks WHERE id = '#{id}'").map { |bookmark| Bookmarks.new(id: bookmark['id'], title: bookmark['title'], url: bookmark['url'], comments: [], tags: []) }[0]
 	end
 
 	def self.not_a_url?(url)
@@ -59,6 +64,14 @@ class Bookmarks
 
 	def self.comment(id, comment)
 		@@database.query("INSERT INTO comments (comment, bookmark_ID) VALUES('#{comment}', '#{id}') RETURNING comment_id, comment, bookmark_ID")
+	end
+
+	def self.tag(id, tag)
+		if @@database.query("SELECT * FROM tags WHERE tag='#{tag}'").first == nil
+			@@database.query("INSERT INTO tags (tag) VALUES('#{tag}')")
+		end
+		tagID = @@database.query("SELECT * FROM tags WHERE tag='#{tag}'").first['tagid']
+		@@database.query("INSERT INTO bookmark_tags (bookmarkID, tagID) VALUES('#{id}', '#{tagID}') RETURNING bookmark_tagID;")
 	end
 
 private

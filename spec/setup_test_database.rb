@@ -14,11 +14,15 @@ end
 def clean_test_database(connection)
 	 connection.exec("DROP TABLE IF EXISTS bookmarks CASCADE")
 	 connection.exec("DROP TABLE IF EXISTS comments")
+	 connection.exec("DROP TABLE IF EXISTS tags CASCADE")
+	 connection.exec("DROP TABLE IF EXISTS bookmark_tags")
 end
 
 def create_bookmarks_table_in_test(connection)
 	connection.exec("CREATE TABLE bookmarks(id SERIAL PRIMARY KEY, url VARCHAR(60), title VARCHAR(60));")
 	connection.exec("CREATE TABLE comments(comment_ID SERIAL PRIMARY KEY, comment VARCHAR(240), bookmark_ID integer REFERENCES bookmarks);")
+  connection.exec("CREATE TABLE tags(tagID SERIAL PRIMARY KEY, tag VARCHAR(60));")
+	connection.exec('CREATE TABLE bookmark_tags(bookmark_tagID SERIAL PRIMARY KEY, bookmarkID INTEGER REFERENCES bookmarks, tagID INTEGER REFERENCES tags);')
 end
 
 def populate_bookmarks_table(connection)
